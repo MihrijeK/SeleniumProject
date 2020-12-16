@@ -1,0 +1,105 @@
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+using System.Data;
+
+namespace ProjektiIS
+{
+    class test1
+    {
+        IWebDriver driver;
+
+        [SetUp]
+        public void startBrowser()
+        {
+            driver = new ChromeDriver("C:\\Users\\ThinkPad T440\\Desktop");
+
+        }
+
+        [Test]
+        public void test()
+        {
+            String query = "select emriMbiemri from personisiguruar;";
+            DataSet ds;
+            ds = connection.DataSet(query);
+            string emriM = ds.Tables[0].Rows[0]["emriMbiemri"].ToString();
+            String query1 = "select ngjyra from automjeti;";
+            DataSet ds1;
+            ds1 = connection.DataSet(query1);
+            string ngjyraa = ds1.Tables[0].Rows[0]["ngjyra"].ToString();
+            String query2 = "select email from personisiguruar;";
+            ds = connection.DataSet(query2);
+            string Email = ds.Tables[0].Rows[0]["email"].ToString();
+            String query3 = "select shasia from automjeti;";
+            ds = connection.DataSet(query3);
+            string shasia = ds.Tables[0].Rows[0]["shasia"].ToString();
+
+            Random rnd = new Random();
+            int shteti = rnd.Next(5, 64);
+
+            string nrTelefonit = funksione.GetRandomTelNo();
+            driver.Url = "https://api.bks-ks.org/policaonline";
+            
+            Task.Delay(1000).Wait();
+            IWebElement marka = driver.FindElement(By.Id(("markatipi")));
+            marka.SendKeys("Kia Seltos compact");
+            Task.Delay(1000).Wait();
+            IWebElement targat = driver.FindElement(By.Id(("tabelat")));
+            targat.SendKeys("WOB TI 113");
+            Task.Delay(1000).Wait();
+            IWebElement ngjyra = driver.FindElement(By.Id(("ngjyra")));
+            ngjyra.SendKeys(ngjyraa);
+            Task.Delay(1000).Wait();
+            IWebElement emri = driver.FindElement(By.Id(("isiguruari_EmriMbiemri")));
+            emri.SendKeys(emriM);
+            Task.Delay(1000).Wait();
+            IWebElement qyteti = driver.FindElement(By.Id(("isiguruari_vendi")));
+            qyteti.SendKeys("Prishtine");
+            Task.Delay(1000).Wait();
+            IWebElement adresa = driver.FindElement(By.Id(("isiguruari_rruga")));
+            adresa.SendKeys("Qendra e Studenteve");
+            Task.Delay(1000).Wait();
+            IWebElement telefoni = driver.FindElement(By.Id(("isiguruari_tel")));
+            telefoni.SendKeys(nrTelefonit);
+            Task.Delay(2000).Wait();
+            IWebElement emailAdresa = driver.FindElement(By.Id(("email")));
+            emailAdresa.SendKeys(Email);
+            Task.Delay(2000).Wait();
+            IWebElement konfirmoEmail = driver.FindElement(By.Id(("emailConfirm")));
+            konfirmoEmail.SendKeys(Email);
+            Task.Delay(2000).Wait();
+            IWebElement zgjedhShtetin = driver.FindElement(By.Id(("ddlShteti")));
+            SelectElement select = new SelectElement(zgjedhShtetin);
+            select.SelectByValue(shteti.ToString());
+           
+            IWebElement kushtet = driver.FindElement(By.Id("btnKushtet"));
+            kushtet.Click();
+            Task.Delay(1000).Wait();
+            IWebElement terms = driver.FindElement(By.Id("TermsAndConditions"));
+            terms.Click();
+            Task.Delay(1000).Wait();
+            
+            IWebElement nrShasis = driver.FindElement(By.Id(("nrshasis")));
+            nrShasis.SendKeys(shasia);
+            Task.Delay(1000).Wait();
+            IWebElement btnVazhdo = driver.FindElement(By.Id(("SubmitButton")));
+            btnVazhdo.Click();
+
+
+        }
+        [TearDown]
+        public void closeBrowser()
+        {
+            driver.Quit();
+        }
+
+    }
+}
